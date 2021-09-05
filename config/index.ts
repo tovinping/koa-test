@@ -1,1 +1,1 @@
-export {mysqlConfig} from './mysql'
+export { mysqlConfig } from "./mysql";
