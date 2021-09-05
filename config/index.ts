@@ -1,0 +1,1 @@
+export {mysqlConfig} from './mysql'
