@@ -1,5 +1,14 @@
 import { ConnectionOptions } from "typeorm/connection/ConnectionOptions";
-
+let entities: string[] = []
+if (process.env.NODE_ENV === "development") {
+  entities = [
+    'models/*.ts'
+  ]
+} else {
+  entities = [
+    'models/*.js'
+  ]
+}
 export const mysqlConfig: ConnectionOptions = {
   type: 'mysql',
   host: 'tovinping.cn',
@@ -8,7 +17,5 @@ export const mysqlConfig: ConnectionOptions = {
   password: 'tang1233',
   database: 'test',
   synchronize: true,
-  entities: [
-    'models/*.ts'
-  ],
+  entities,
 }

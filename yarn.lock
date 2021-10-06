@@ -397,6 +397,22 @@
     "object-assign" "^4"
     "vary" "^1"
 
+"cross-env@^7.0.3":
+  "integrity" "sha1-hlJkspZ33AFbqEGJGJZd0jL8VM8="
+  "resolved" "https://registry.npm.taobao.org/cross-env/download/cross-env-7.0.3.tgz"
+  "version" "7.0.3"
+  dependencies:
+    "cross-spawn" "^7.0.1"
+
+"cross-spawn@^7.0.1":
+  "integrity" "sha1-9zqFudXUHQRVUcF34ogtSshXKKY="
+  "resolved" "https://registry.nlark.com/cross-spawn/download/cross-spawn-7.0.3.tgz"
+  "version" "7.0.3"
+  dependencies:
+    "path-key" "^3.1.0"
+    "shebang-command" "^2.0.0"
+    "which" "^2.0.1"
+
 "crypt@0.0.2":
   "integrity" "sha1-iNf/fsDfuG9xPch7u0LQRNPmxBs="
   "resolved" "https://registry.npm.taobao.org/crypt/download/crypt-0.0.2.tgz"
@@ -653,6 +669,11 @@
   "resolved" "https://registry.npm.taobao.org/isarray/download/isarray-1.0.0.tgz"
   "version" "1.0.0"
 
+"isexe@^2.0.0":
+  "integrity" "sha1-6PvzdNxVb/iUehDcsFctYz8s+hA="
+  "resolved" "https://registry.npm.taobao.org/isexe/download/isexe-2.0.0.tgz"
+  "version" "2.0.0"
+
 "js-yaml@^3.14.0":
   "integrity" "sha1-2ugS/bOCX6MGYJqHFzg8UMNqBTc="
   "resolved" "https://registry.npm.taobao.org/js-yaml/download/js-yaml-3.14.1.tgz?cache=0&sync_timestamp=1609680108107&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fjs-yaml%2Fdownload%2Fjs-yaml-3.14.1.tgz"
@@ -880,6 +901,11 @@
   "resolved" "https://registry.npm.taobao.org/path-is-absolute/download/path-is-absolute-1.0.1.tgz"
   "version" "1.0.1"
 
+"path-key@^3.1.0":
+  "integrity" "sha1-WB9q3mWMu6ZaDTOA3ndTKVBU83U="
+  "resolved" "https://registry.npm.taobao.org/path-key/download/path-key-3.1.1.tgz?cache=0&sync_timestamp=1617971695678&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fpath-key%2Fdownload%2Fpath-key-3.1.1.tgz"
+  "version" "3.1.1"
+
 "path-to-regexp@^6.1.0":
   "integrity" "sha1-97OAMzYQTDRoia3s5hRmkjBkXzg="
   "resolved" "https://registry.npm.taobao.org/path-to-regexp/download/path-to-regexp-6.2.0.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fpath-to-regexp%2Fdownload%2Fpath-to-regexp-6.2.0.tgz"
@@ -960,6 +986,18 @@
   dependencies:
     "inherits" "^2.0.1"
     "safe-buffer" "^5.0.1"
+
+"shebang-command@^2.0.0":
+  "integrity" "sha1-zNCvT4g1+9wmW4JGGq8MNmY/NOo="
+  "resolved" "https://registry.nlark.com/shebang-command/download/shebang-command-2.0.0.tgz"
+  "version" "2.0.0"
+  dependencies:
+    "shebang-regex" "^3.0.0"
+
+"shebang-regex@^3.0.0":
+  "integrity" "sha1-rhbxZE2HPsrYQ7AwexQzYtTEIXI="
+  "resolved" "https://registry.nlark.com/shebang-regex/download/shebang-regex-3.0.0.tgz?cache=0&sync_timestamp=1628896299850&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fshebang-regex%2Fdownload%2Fshebang-regex-3.0.0.tgz"
+  "version" "3.0.0"
 
 "socket.io-adapter@~2.0.3":
   "integrity" "sha1-Nyt83npTX8T08NWsf3OVKjBi1Dg="
@@ -1130,6 +1168,13 @@
   "integrity" "sha1-IpnwLG3tMNSllhsLn3RSShj2NPw="
   "resolved" "https://registry.npm.taobao.org/vary/download/vary-1.1.2.tgz"
   "version" "1.1.2"
+
+"which@^2.0.1":
+  "integrity" "sha1-fGqN0KY2oDJ+ELWckobu6T8/UbE="
+  "resolved" "https://registry.nlark.com/which/download/which-2.0.2.tgz"
+  "version" "2.0.2"
+  dependencies:
+    "isexe" "^2.0.0"
 
 "wrap-ansi@^7.0.0":
   "integrity" "sha1-Z+FFz/UQpqaYS98RUpEdadLrnkM="
