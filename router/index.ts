@@ -2,7 +2,7 @@ import * as Router from 'koa-router'
 const router = new Router()
 export async function loadRouter(app: any) {
   await import('../controller/User')
-  await import('../controller/Conversation')
+  await import('../controller/Chat')
   await import('../controller/GroupInfo')
   await import('../controller/GroupMember')
   app.use(router.routes())

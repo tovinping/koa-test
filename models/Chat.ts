@@ -1,12 +1,12 @@
 import { Entity, BaseEntity, Column, PrimaryGeneratedColumn } from 'typeorm'
 
 @Entity()
-export class Conversation extends BaseEntity {
+export class Chat extends BaseEntity {
   @PrimaryGeneratedColumn()
   _id: number
   // 会话id(群id|对方帐号)
   @Column({unique: true})
-  conversationId: string
+  chatId: string
   // 创建会话人的帐号
   @Column()
   owner: string;
