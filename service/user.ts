@@ -1,4 +1,4 @@
-import {User} from '../db'
+import { User } from '../db'
 import { responseSuccess, responseError } from '../utils'
 
 export function getUser(account: string) {
@@ -8,7 +8,7 @@ export function getUsers() {
   return User.find()
 }
 export async function addUser(data: any) {
-  if (!data) return { result: 1, msg: '空数据' }
+  if (!data) return responseError({ msg: '不要上传空数据' })
   if (!data.account || !data.name || !data.password || !data.mail) {
     return { result: 1, msg: '数据不完整' }
   }
