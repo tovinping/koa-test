@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon index.ts",
     "eslint": "eslint --fix ./",
-    "pre-commit": "npm run eslint && pretty-quick --staged"
+    "pretty-quick": "npm run eslint && pretty-quick --staged"
   },
   "keywords": [],
   "author": "",
