@@ -2,14 +2,13 @@ import Koa from 'koa'
 import mongoose from 'mongoose'
 import koaStatic from 'koa-static'
 import koaBody from 'koa-body'
-import koaJwt from 'koa-jwt'
 import appRouter from './router'
-import { verifyToken } from './middleware'
+import { jwtMiddleware } from './middleware'
 import './db'
 
 const app = new Koa()
 app.use(koaStatic('./static'))
-app.use(verifyToken(['/user/login', '/user/register']))
+app.use(jwtMiddleware(['/user/login', '/user/register']))
 app.use(koaBody())
 app.use(appRouter.routes())
 const db = mongoose.connection

@@ -1,8 +1,8 @@
 import type Koa from 'koa'
-import jwt from 'jsonwebtoken'
-import config from '../config.json'
+import { ERROR_CODE } from '../constant'
+import { decodeJwtToken, getJwtToken, responseError, verifyJwtToken } from '../utils'
 
-export function verifyToken(whiteList: string[]) {
+export function jwtMiddleware(whiteList: string[]) {
   return (ctx: Koa.Context, next: Koa.Next) => {
     const url = ctx.url
     if (whiteList.includes(url)) {
@@ -11,15 +11,23 @@ export function verifyToken(whiteList: string[]) {
       const authorization = ctx.header.authorization
       const tokenStr = authorization?.split(' ')[1]
       if (!tokenStr) {
-        ctx.throw(401, 'should login')
+        ctx.body = responseError({
+          code: ERROR_CODE.TOKEN_EMPTY,
+          msg: 'token is empty',
+        })
+        return
       }
       try {
-        const data = jwt.verify(tokenStr, config.jwtSecret)
+        const data = verifyJwtToken(tokenStr)
         ctx.state.token = data
+        return next()
       } catch (error) {
-        ctx.throw(401, 'token expired')
+        ctx.body = responseError({
+          code: ERROR_CODE.TOKEN_EXPIRE,
+          msg: 'token is expired',
+        })
+        return
       }
-      return next()
     }
   }
 }

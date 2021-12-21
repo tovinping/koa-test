@@ -1,7 +1,5 @@
 import { User } from '../db'
-import { responseSuccess, responseError, getUUID, getMD5 } from '../utils'
-import jwt from 'jsonwebtoken'
-import config from '../config.json'
+import { responseSuccess, responseError, getUUID, getMD5, getJwtToken } from '../utils'
 
 export function getUser(account: string) {
   return User.findOne({ account })
@@ -40,15 +38,10 @@ export function updateUser() {
 }
 
 export async function login(data: any) {
-  if (!data || !data.account || !data.password)
-    return responseError({ msg: '数据为空' })
+  if (!data || !data.account || !data.password) return responseError({ msg: '数据为空' })
   const findRes = await User.findOne({ account: data.account })
   if (findRes?.password === getMD5(data.password, findRes?.salt)) {
-    const token = jwt.sign(
-      { account: findRes.account, name: findRes.name },
-      config.jwtSecret,
-      { expiresIn: '1h' }
-    )
+    const token = getJwtToken(findRes)
     return responseSuccess({ msg: '登录成功', data: token })
   } else {
     return responseError({ msg: '登录失败' })
