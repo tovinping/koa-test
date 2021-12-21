@@ -1,1 +1,3 @@
-export function checkTimeDiff(diff: number) {}
+export function checkTimeDiff(diff: number) {
+  return diff
+}

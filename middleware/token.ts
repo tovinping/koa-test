@@ -1,6 +1,6 @@
 import type Koa from 'koa'
 import { ERROR_CODE } from '../constant'
-import { decodeJwtToken, getJwtToken, responseError, verifyJwtToken } from '../utils'
+import { responseError, verifyJwtToken } from '../utils'
 
 export function jwtMiddleware(whiteList: string[]) {
   return (ctx: Koa.Context, next: Koa.Next) => {
