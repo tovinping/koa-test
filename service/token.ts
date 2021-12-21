@@ -1,5 +1,5 @@
 import { ERROR_CODE } from '../constant'
-import { decodeJwtToken, responseError, responseSuccess, verifyJwtToken, getJwtToken } from '../utils'
+import { decodeJwtToken, responseError, responseSuccess, verifyJwtToken } from '../utils'
 export function refreshToken(tokenStr: string) {
   if (!tokenStr) return responseError({ code: ERROR_CODE.TOKEN_EMPTY, msg: 'token is empty' })
   const data = decodeJwtToken(tokenStr)
