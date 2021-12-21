@@ -1,6 +1,0 @@
-{
-  "mongoDB": {
-    "url": "mongodb+srv://tovinping:tang1233@cluster0.opfpj.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
-  },
-  "jwtSecret": "tovinping"
-}
