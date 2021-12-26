@@ -4,10 +4,17 @@ import config from '../config.json'
 interface IGetJwtToken {
   account: string
   name: string
+  role: string
+}
+function sign(data: object, expiresIn: number | string) {
+  return jwt.sign(data, config.jwtSecret, { expiresIn })
 }
 export function getJwtToken(data: IGetJwtToken) {
-  const token = jwt.sign({ account: data.account, name: data.name }, config.jwtSecret, { expiresIn: 30 })
-  return token
+  return sign(data, '30m')
+}
+
+export function getRefreshToken(data: any) {
+  return sign(data, '3d')
 }
 
 export function verifyJwtToken(tokenStr: string) {

@@ -1,5 +1,14 @@
 import { User } from '../db'
-import { responseSuccess, responseError, getUUID, getMD5, getJwtToken, decryptRsa } from '../utils'
+import {
+  responseSuccess,
+  responseError,
+  getUUID,
+  getMD5,
+  getJwtToken,
+  decryptRsa,
+  getRefreshToken,
+  decodeJwtToken,
+} from '../utils'
 
 export function getUser(account: string) {
   return User.findOne({ account })
@@ -40,11 +49,28 @@ export function updateUser() {
 export async function login(data: any) {
   if (!data || !data.account || !data.password) return responseError({ msg: '数据为空' })
   const findRes = await User.findOne({ account: data.account })
-  const deCodePwd = decryptRsa(data.password).toString()
+  const deCodePwd = decryptRsa(data.password)
+  if (!deCodePwd) {
+    return responseError({ msg: '密码解析异常' })
+  }
   if (findRes?.password === getMD5(deCodePwd, findRes?.salt)) {
-    const token = getJwtToken(findRes)
-    return responseSuccess({ msg: '登录成功', data: token })
+    const token = getJwtToken({ account: findRes.account, name: findRes.name, role: findRes.role })
+    const refreshToken = getRefreshToken({ account: findRes.account })
+    return responseSuccess({ msg: '登录成功', data: { token, refreshToken } })
   } else {
     return responseError({ msg: '登录失败' })
   }
+}
+
+export async function autoLogin(data?: any) {
+  if (!data || !data.refreshToken) return responseError({ msg: '登录失败' })
+  const tokenObj = decodeJwtToken(data.refreshToken)
+  if (tokenObj?.payload?.account) {
+    const findRes = await User.findOne({ account: tokenObj.payload.account })
+    if (!findRes) return responseError({ msg: '请确认帐号是否有效' })
+    const token = getJwtToken({ account: findRes.account, name: findRes.name, role: findRes.role })
+    const refreshToken = getRefreshToken({ account: findRes.account })
+    return responseSuccess({ data: { token, refreshToken } })
+  }
+  return responseError({ msg: '登录已失效' })
 }

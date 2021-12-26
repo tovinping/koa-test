@@ -9,7 +9,7 @@ import './db'
 const app = new Koa()
 app.use(myCors)
 app.use(koaStatic('./static'))
-app.use(jwtMiddleware(['/user/login', '/user/register', '/encrypt/publicKey']))
+app.use(jwtMiddleware(['/user/login', '/user/register', '/user/autoLogin', '/encrypt/publicKey']))
 app.use(koaBody())
 app.use(appRouter.routes())
 const db = mongoose.connection

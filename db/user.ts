@@ -5,6 +5,8 @@ interface IUserModel {
   name: string
   mail: string
   salt: string
+  /** 0普通1管理 */
+  role: string
 }
 
 const schema = new mongoose.Schema<IUserModel>({
@@ -13,5 +15,6 @@ const schema = new mongoose.Schema<IUserModel>({
   name: String,
   mail: String,
   salt: String,
+  role: { type: String, default: '0' },
 })
 export const User = mongoose.model('user', schema)

@@ -28,4 +28,8 @@ router.post('/login', async ctx => {
   const result = await user.login(ctx.request.body)
   ctx.body = result
 })
+router.post('/autoLogin', async ctx => {
+  const result = await user.autoLogin(ctx.request.body)
+  ctx.body = result
+})
 export default router

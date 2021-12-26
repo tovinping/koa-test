@@ -14,7 +14,11 @@ export function encryptRsa(data: string) {
   return rsaKey.encrypt(data)
 }
 export function decryptRsa(data: string | Buffer) {
-  return rsaKey.decrypt(data)
+  try {
+    return rsaKey.decrypt(data).toString()
+  } catch (error) {
+    return ''
+  }
 }
 export function getRsaPublicKey() {
   return rsaKey.exportKey('public')
