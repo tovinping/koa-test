@@ -3,10 +3,11 @@ import mongoose from 'mongoose'
 import koaStatic from 'koa-static'
 import koaBody from 'koa-body'
 import appRouter from './router'
-import { jwtMiddleware } from './middleware'
+import { jwtMiddleware, myCors } from './middleware'
 import './db'
 
 const app = new Koa()
+app.use(myCors)
 app.use(koaStatic('./static'))
 app.use(jwtMiddleware(['/user/login', '/user/register', '/encrypt/publicKey']))
 app.use(koaBody())
