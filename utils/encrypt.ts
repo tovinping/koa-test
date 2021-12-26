@@ -2,6 +2,7 @@ import MD5 from 'md5'
 import NodeRsa from 'node-rsa'
 import { v4 as uuidV4 } from 'uuid'
 const rsaKey = new NodeRsa({ b: 512 })
+rsaKey.setOptions({ encryptionScheme: 'pkcs1' })
 export function getUUID() {
   return uuidV4()
 }

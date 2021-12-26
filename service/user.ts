@@ -1,5 +1,5 @@
 import { User } from '../db'
-import { responseSuccess, responseError, getUUID, getMD5, getJwtToken } from '../utils'
+import { responseSuccess, responseError, getUUID, getMD5, getJwtToken, decryptRsa } from '../utils'
 
 export function getUser(account: string) {
   return User.findOne({ account })
@@ -38,10 +38,10 @@ export function updateUser() {
 }
 
 export async function login(data: any) {
-  console.log('TANG===', data)
   if (!data || !data.account || !data.password) return responseError({ msg: '数据为空' })
   const findRes = await User.findOne({ account: data.account })
-  if (findRes?.password === getMD5(data.password, findRes?.salt)) {
+  const deCodePwd = decryptRsa(data.password).toString()
+  if (findRes?.password === getMD5(deCodePwd, findRes?.salt)) {
     const token = getJwtToken(findRes)
     return responseSuccess({ msg: '登录成功', data: token })
   } else {

@@ -4,7 +4,7 @@ import { responseError, verifyJwtToken } from '../utils'
 
 export function jwtMiddleware(whiteList: string[]) {
   return (ctx: Koa.Context, next: Koa.Next) => {
-    const url = ctx.url
+    const url = ctx.url.split('?')[0]
     if (whiteList.includes(url)) {
       return next()
     } else {
