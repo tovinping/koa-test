@@ -38,6 +38,7 @@ export function updateUser() {
 }
 
 export async function login(data: any) {
+  console.log('TANG===', data)
   if (!data || !data.account || !data.password) return responseError({ msg: '数据为空' })
   const findRes = await User.findOne({ account: data.account })
   if (findRes?.password === getMD5(data.password, findRes?.salt)) {

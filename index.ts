@@ -8,7 +8,7 @@ import './db'
 
 const app = new Koa()
 app.use(koaStatic('./static'))
-app.use(jwtMiddleware(['/user/login', '/user/register']))
+app.use(jwtMiddleware(['/user/login', '/user/register', '/encrypt/publicKey']))
 app.use(koaBody())
 app.use(appRouter.routes())
 const db = mongoose.connection
