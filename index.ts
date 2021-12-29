@@ -12,6 +12,7 @@ app.use(koaStatic('./static'))
 app.use(jwtMiddleware(['/user/login', '/user/register', '/user/autoLogin', '/encrypt/publicKey']))
 app.use(koaBody())
 app.use(appRouter.routes())
+console.log('start open db')
 const db = mongoose.connection
 db.on('error', () => {
   console.error('db open error')

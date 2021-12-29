@@ -74,3 +74,11 @@ export async function autoLogin(data?: any) {
   }
   return responseError({ msg: '登录已失效' })
 }
+
+export async function updateSign(data?: any) {
+  const sign = data.request.body.sign || ''
+  const account = data.state.token.account
+  const result = await User.findOneAndUpdate({ account }, { sign })
+  if (result) return responseSuccess({})
+  return responseError({})
+}
