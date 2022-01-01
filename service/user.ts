@@ -56,7 +56,7 @@ export async function login(data: any) {
   if (findRes?.password === getMD5(deCodePwd, findRes?.salt)) {
     const token = getJwtToken({ account: findRes.account, name: findRes.name, role: findRes.role })
     const refreshToken = getRefreshToken({ account: findRes.account })
-    return responseSuccess({ msg: '登录成功', data: { token, refreshToken } })
+    return responseSuccess({ msg: '登录成功', body: { token, refreshToken } })
   } else {
     return responseError({ msg: '登录失败' })
   }
@@ -70,7 +70,7 @@ export async function autoLogin(data?: any) {
     if (!findRes) return responseError({ msg: '请确认帐号是否有效' })
     const token = getJwtToken({ account: findRes.account, name: findRes.name, role: findRes.role })
     const refreshToken = getRefreshToken({ account: findRes.account })
-    return responseSuccess({ data: { token, refreshToken } })
+    return responseSuccess({ body: { token, refreshToken } })
   }
   return responseError({ msg: '登录已失效' })
 }

@@ -13,7 +13,7 @@ export function refreshToken(tokenStr: string) {
 
   try {
     const data = verifyJwtToken(tokenStr)
-    responseSuccess({ data })
+    responseSuccess({ body: data })
   } catch (error) {
     return responseError({
       code: ERROR_CODE.TOKEN_EXPIRE,

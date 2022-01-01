@@ -5,7 +5,7 @@ const router = new Router()
 
 router.get('/publicKey', async ctx => {
   const publicKey = getRsaPublicKey()
-  ctx.body = responseSuccess({ data: publicKey })
+  ctx.body = responseSuccess({ body: publicKey })
 })
 
 export default router
