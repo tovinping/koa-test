@@ -49,13 +49,14 @@ export function updateUser() {
 
 export async function login(data: any) {
   if (!data || !data.account || !data.password) return responseError({ msg: '数据为空' })
-  const findRes = await User.findOne({ account: data.account })
+  const findRes = await User.findOne({ account: data.account }, { password: 1, account: 1, role: 1, salt: 1 })
+  console.log('TANG===', findRes)
   const deCodePwd = decryptRsa(data.password)
   if (!deCodePwd) {
     return responseError({ msg: '密码解析异常' })
   }
   if (findRes?.password === getMD5(deCodePwd, findRes?.salt)) {
-    const token = getJwtToken({ account: findRes.account, name: findRes.name, role: findRes.role })
+    const token = getJwtToken({ account: findRes.account, role: findRes.role })
     const refreshToken = getRefreshToken({ account: findRes.account })
     return responseSuccess({ msg: '登录成功', body: { token, refreshToken } })
   } else {
@@ -69,7 +70,7 @@ export async function autoLogin(data?: any) {
   if (tokenObj?.payload?.account) {
     const findRes = await User.findOne({ account: tokenObj.payload.account })
     if (!findRes) return responseError({ msg: '请确认帐号是否有效' })
-    const token = getJwtToken({ account: findRes.account, name: findRes.name, role: findRes.role })
+    const token = getJwtToken({ account: findRes.account, role: findRes.role })
     const refreshToken = getRefreshToken({ account: findRes.account })
     return responseSuccess({ body: { token, refreshToken } })
   }

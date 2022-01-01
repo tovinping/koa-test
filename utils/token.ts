@@ -3,7 +3,6 @@ import config from '../config.json'
 
 interface IGetJwtToken {
   account: string
-  name: string
   role: string
 }
 function sign(data: object, expiresIn: number | string) {
