@@ -4,7 +4,7 @@ const router = new Router()
 
 router.get('/:account', async ctx => {
   const data = await user.getUser(ctx.params.account)
-  ctx.body = { result: 0, data }
+  ctx.body = data
 })
 router.get('/', async ctx => {
   const data = await user.getUsers()

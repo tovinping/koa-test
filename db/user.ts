@@ -12,11 +12,14 @@ interface IUserModel {
 
 const schema = new mongoose.Schema<IUserModel>({
   account: String,
-  password: String,
   name: String,
   mail: String,
-  salt: String,
   sign: String,
+  password: { type: String, select: false },
+  salt: {
+    type: String,
+    select: false,
+  },
   role: { type: String, default: '0' },
 })
 export const User = mongoose.model('user', schema)

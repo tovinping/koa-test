@@ -10,8 +10,9 @@ import {
   decodeJwtToken,
 } from '../utils'
 
-export function getUser(account: string) {
-  return User.findOne({ account })
+export async function getUser(account: string) {
+  const result = await User.findOne({ account }, { _id: 0, __v: 0 })
+  return responseSuccess({ body: result })
 }
 export function getUsers() {
   return User.find()
