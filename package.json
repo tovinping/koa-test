@@ -13,8 +13,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@types/koa": "^2.13.4",
-    "@types/koa-static": "^4.0.2",
     "jsonwebtoken": "^8.5.1",
     "koa": "^2.13.4",
     "koa-body": "^4.2.0",
@@ -24,14 +22,17 @@
     "mongoose": "^6.1.0",
     "node-rsa": "^1.1.1",
     "qcloud-cos-sts": "^3.0.6",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "validator": "^13.7.0"
   },
   "devDependencies": {
+    "@types/koa": "^2.13.4",
     "@types/jsonwebtoken": "^8.5.6",
     "@types/koa-router": "^7.4.4",
     "@types/md5": "^2.3.1",
     "@types/node-rsa": "^1.1.1",
     "@types/uuid": "^8.3.3",
+    "@types/validator": "^13.7.1",
     "@typescript-eslint/eslint-plugin": "^5.8.0",
     "@typescript-eslint/parser": "^5.8.0",
     "eslint": "^8.5.0",

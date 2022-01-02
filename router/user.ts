@@ -10,15 +10,10 @@ router.get('/', async ctx => {
   const data = await user.getUsers()
   ctx.body = { result: 0, data }
 })
-router.post('/', async ctx => {
+router.post('/register', async ctx => {
   const body = ctx.request.body
-  console.log('body', body, typeof body)
-  const result = await user.addUser(body)
+  const result = await user.register(body)
   ctx.body = result
-})
-router.put('/', async ctx => {
-  console.log('put=', ctx)
-  ctx.body = { result: 0 }
 })
 router.del('/:account', async ctx => {
   const data = await user.delUser(ctx.params.account)

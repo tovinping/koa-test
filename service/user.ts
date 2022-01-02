@@ -8,6 +8,7 @@ import {
   decryptRsa,
   getRefreshToken,
   decodeJwtToken,
+  isMail,
 } from '../utils'
 
 export async function getUser(account: string) {
@@ -17,28 +18,34 @@ export async function getUser(account: string) {
 export function getUsers() {
   return User.find()
 }
-export async function addUser(data: any) {
+export async function register(data: any) {
   if (!data || !data.account || !data.name || !data.password || !data.mail) {
     return responseError({ msg: '数据不完整' })
+  }
+  if (!isMail(data.mail)) {
+    return responseError({ msg: '邮箱格式不正确' })
   }
   const findRes = await User.findOne({ account: data.account })
   if (findRes?.account) {
     return responseError({ msg: '用户已存在' })
   } else {
-    const uuid = getUUID()
-    const md5Pwd = getMD5(data.password, uuid)
-    const user = new User({ ...data, password: md5Pwd, salt: uuid })
+    const deCodePwd = decryptRsa(data.password)
+    if (!deCodePwd) {
+      return responseError({ msg: '密码解析失败' })
+    }
+    const salt = getUUID()
+    const md5Pwd = getMD5(deCodePwd, salt)
+    const user = new User({ ...data, password: md5Pwd, salt })
     const result = await user.save()
     if (result.account) {
-      return responseSuccess({ msg: '添加成功' })
+      return responseSuccess({ msg: '注册成功' })
     } else {
-      return responseError({ msg: '添加失败' })
+      return responseError({ msg: '注册失败' })
     }
   }
 }
 
 export function delUser(account: string) {
-  console.log('delUser start', account)
   return User.deleteOne({ account })
 }
 // 未完成
