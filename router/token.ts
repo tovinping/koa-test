@@ -3,9 +3,14 @@ import { getSts } from '../service'
 import { responseError, responseSuccess } from '../utils'
 const router = new Router()
 
-router.get('/sts', async ctx => {
-  const token = await getSts()
-  console.log('token==', token)
+router.get('/sts/:account', async ctx => {
+  const account = ctx.params.account
+  const tokenAccount = ctx.state?.token?.account
+  if (!account || account !== tokenAccount) {
+    ctx.body = responseError({ msg: '帐号不合法' })
+    return
+  }
+  const token = await getSts(account)
   if (!token) {
     ctx.body = responseError({})
   }

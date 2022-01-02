@@ -25,11 +25,9 @@ export function refreshToken(tokenStr: string) {
   }
 }
 // 获取腾讯云cos临时密钥
-export async function getSts() {
-  const cosConfig = config.cos
-  const LongBucketName = cosConfig.bucket
-  const ShortBucketName = LongBucketName.substring(0, LongBucketName.lastIndexOf('-'))
-  const AppId = LongBucketName.substring(LongBucketName.lastIndexOf('-') + 1)
+export async function getSts(account: string) {
+  const cosConfig = { ...config.cos, allowPrefix: `images/${account}/*` }
+  const [ShortBucketName, AppId] = cosConfig.bucket.split('-')
   const policy = {
     version: '2.0',
     statement: [
