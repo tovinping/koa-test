@@ -1,5 +1,8 @@
+import STS from 'qcloud-cos-sts'
 import { ERROR_CODE } from '../constant'
 import { decodeJwtToken, responseError, responseSuccess, verifyJwtToken } from '../utils'
+import config from '../config.json'
+
 export function refreshToken(tokenStr: string) {
   if (!tokenStr) return responseError({ code: ERROR_CODE.TOKEN_EMPTY, msg: 'token is empty' })
   const data = decodeJwtToken(tokenStr)
@@ -20,4 +23,39 @@ export function refreshToken(tokenStr: string) {
       msg: 'token is expired',
     })
   }
+}
+// 获取腾讯云cos临时密钥
+export async function getSts() {
+  const cosConfig = config.cos
+  const LongBucketName = cosConfig.bucket
+  const ShortBucketName = LongBucketName.substring(0, LongBucketName.lastIndexOf('-'))
+  const AppId = LongBucketName.substring(LongBucketName.lastIndexOf('-') + 1)
+  const policy = {
+    version: '2.0',
+    statement: [
+      {
+        action: cosConfig.allowActions,
+        effect: 'allow',
+        resource: [
+          'qcs::cos:' +
+            cosConfig.region +
+            ':uid/' +
+            AppId +
+            ':prefix//' +
+            AppId +
+            '/' +
+            ShortBucketName +
+            '/' +
+            cosConfig.allowPrefix,
+        ],
+      },
+    ],
+  }
+  const data = await STS.getCredential({
+    secretId: cosConfig.secretId,
+    secretKey: cosConfig.secretKey,
+    durationSeconds: cosConfig.durationSeconds,
+    policy: policy,
+  })
+  return data
 }

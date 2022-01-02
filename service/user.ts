@@ -50,7 +50,6 @@ export function updateUser() {
 export async function login(data: any) {
   if (!data || !data.account || !data.password) return responseError({ msg: '数据为空' })
   const findRes = await User.findOne({ account: data.account }, { password: 1, account: 1, role: 1, salt: 1 })
-  console.log('TANG===', findRes)
   const deCodePwd = decryptRsa(data.password)
   if (!deCodePwd) {
     return responseError({ msg: '密码解析异常' })
