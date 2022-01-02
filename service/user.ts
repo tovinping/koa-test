@@ -83,3 +83,11 @@ export async function updateSign(data?: any) {
   if (result) return responseSuccess({})
   return responseError({})
 }
+
+export async function updateAvatar(data?: any) {
+  const avatar = data.request.body.avatarUrl
+  const account = data.state.token.account
+  const result = await User.findOneAndUpdate({ account }, { avatar })
+  if (result) return responseSuccess({})
+  return responseError({})
+}

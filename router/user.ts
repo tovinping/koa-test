@@ -36,4 +36,8 @@ router.put('/sign', async ctx => {
   const result = await user.updateSign(ctx)
   ctx.body = result
 })
+router.put('/avatar', async ctx => {
+  const result = await user.updateAvatar(ctx)
+  ctx.body = result
+})
 export default router

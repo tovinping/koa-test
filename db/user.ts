@@ -6,15 +6,26 @@ interface IUserModel {
   mail: string
   salt: string
   sign: string
+  avatar: string
   /** 0普通1管理 */
   role: string
 }
 
 const schema = new mongoose.Schema<IUserModel>({
-  account: String,
-  name: String,
-  mail: String,
+  account: {
+    type: String,
+    required: true,
+  },
+  name: {
+    type: String,
+    required: true,
+  },
+  mail: {
+    type: String,
+    required: true,
+  },
   sign: String,
+  avatar: String,
   password: { type: String, select: false },
   salt: {
     type: String,
