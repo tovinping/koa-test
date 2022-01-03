@@ -124,4 +124,29 @@ router.put('/password', async ctx => {
   const tokenAccount = ctx.state.token.account
   ctx.body = { msg: 'ok', data: { account, tokenAccount } }
 })
+router.put('/forget', async ctx => {
+  const { account, mail, password, captcha } = ctx.request.body
+  if (!account || !mail || !password || !captcha) {
+    ctx.body = responseError({ msg: '逗我呢' })
+    return
+  }
+  // 验码-未完成-验证帐号和密码是一起的
+  const findRes = await User.findOne({ account }, { salt: 1, mail: 1 })
+  if (findRes?.mail !== mail) {
+    ctx.body = responseError({ msg: '哦豁,失败啦' })
+    return
+  }
+  const deCodePwd = decryptRsa(password)
+  if (!deCodePwd) {
+    ctx.body = responseError({ msg: '密码解析失败' })
+    return
+  }
+  const md5Pwd = getMD5(deCodePwd, findRes?.salt)
+  const updateRes = await User.findOneAndUpdate({ account }, { password: md5Pwd })
+  if (updateRes) {
+    ctx.body = responseSuccess({})
+    return
+  }
+  ctx.body = responseError({})
+})
 export default router

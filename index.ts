@@ -7,7 +7,7 @@ import './db'
 
 const app = new Koa()
 app.use(myCors)
-app.use(jwtMiddleware(['/user/login', '/user/register', '/user/autoLogin', '/encrypt/publicKey']))
+app.use(jwtMiddleware(['/user/login', '/user/register', '/user/autoLogin', '/encrypt/publicKey', '/user/forget']))
 app.use(koaBody())
 app.use(appRouter.routes())
 console.log('数据库连接中...')
