@@ -1,3 +1,4 @@
+import Router from 'koa-router'
 import { User } from '../db'
 import {
   responseSuccess,
@@ -10,91 +11,117 @@ import {
   decodeJwtToken,
   isMail,
 } from '../utils'
+const router = new Router()
 
-export async function getUser(account: string) {
+router.get('/:account', async ctx => {
+  const account = ctx.params.account
   const result = await User.findOne({ account }, { _id: 0, __v: 0 })
-  return responseSuccess({ body: result })
-}
-export function getUsers() {
-  return User.find()
-}
-export async function register(data: any) {
+  ctx.body = responseSuccess({ body: result })
+})
+
+router.post('/register', async ctx => {
+  const data = ctx.request.body
   if (!data || !data.account || !data.name || !data.password || !data.mail) {
-    return responseError({ msg: '数据不完整' })
+    ctx.body = responseError({ msg: '数据不完整' })
+    return
   }
   if (!isMail(data.mail)) {
-    return responseError({ msg: '邮箱格式不正确' })
+    ctx.body = responseError({ msg: '邮箱格式不正确' })
+    return
   }
   const findRes = await User.findOne({ account: data.account })
   if (findRes?.account) {
-    return responseError({ msg: '用户已存在' })
+    ctx.body = responseError({ msg: '用户已存在' })
+    return
   } else {
     const deCodePwd = decryptRsa(data.password)
     if (!deCodePwd) {
-      return responseError({ msg: '密码解析失败' })
+      ctx.body = responseError({ msg: '密码解析失败' })
+      return
     }
     const salt = getUUID()
     const md5Pwd = getMD5(deCodePwd, salt)
     const user = new User({ ...data, password: md5Pwd, salt })
     const result = await user.save()
     if (result.account) {
-      return responseSuccess({ msg: '注册成功' })
+      ctx.body = responseSuccess({ msg: '注册成功' })
+      return
     } else {
-      return responseError({ msg: '注册失败' })
+      ctx.body = responseError({ msg: '注册失败' })
+      return
     }
   }
-}
+})
 
-export function delUser(account: string) {
-  return User.deleteOne({ account })
-}
-// 未完成
-export function updateUser() {
-  // 检查token
-  return null
-}
-
-export async function login(data: any) {
-  if (!data || !data.account || !data.password) return responseError({ msg: '数据为空' })
+router.post('/login', async ctx => {
+  const data = ctx.request.body
+  if (!data || !data.account || !data.password) {
+    ctx.body = responseError({ msg: '数据为空' })
+    return
+  }
   const findRes = await User.findOne({ account: data.account }, { password: 1, account: 1, role: 1, salt: 1 })
   const deCodePwd = decryptRsa(data.password)
   if (!deCodePwd) {
-    return responseError({ msg: '密码解析异常' })
+    ctx.body = responseError({ msg: '密码解析异常' })
+    return
   }
   if (findRes?.password === getMD5(deCodePwd, findRes?.salt)) {
     const token = getJwtToken({ account: findRes.account, role: findRes.role })
     const refreshToken = getRefreshToken({ account: findRes.account })
-    return responseSuccess({ msg: '登录成功', body: { token, refreshToken } })
+    ctx.body = responseSuccess({ msg: '登录成功', body: { token, refreshToken } })
+    return
   } else {
-    return responseError({ msg: '登录失败' })
+    ctx.body = responseError({ msg: '登录失败' })
+    return
   }
-}
+})
 
-export async function autoLogin(data?: any) {
-  if (!data || !data.refreshToken) return responseError({ msg: '登录失败' })
+router.post('/autoLogin', async ctx => {
+  const data = ctx.request.body
+  if (!data || !data.refreshToken) {
+    ctx.body = responseError({ msg: '登录失败' })
+    return
+  }
   const tokenObj = decodeJwtToken(data.refreshToken)
   if (tokenObj?.payload?.account) {
     const findRes = await User.findOne({ account: tokenObj.payload.account })
-    if (!findRes) return responseError({ msg: '请确认帐号是否有效' })
+    if (!findRes) {
+      ctx.body = responseError({ msg: '请确认帐号是否有效' })
+      return
+    }
     const token = getJwtToken({ account: findRes.account, role: findRes.role })
     const refreshToken = getRefreshToken({ account: findRes.account })
-    return responseSuccess({ body: { token, refreshToken } })
+    ctx.body = responseSuccess({ body: { token, refreshToken } })
+    return
   }
-  return responseError({ msg: '登录已失效' })
-}
+  ctx.body = responseError({ msg: '登录已失效' })
+})
 
-export async function updateSign(data?: any) {
-  const sign = data.request.body.sign || ''
-  const account = data.state.token.account
+router.put('/sign', async ctx => {
+  const sign = ctx.request.body.sign || ''
+  const account = ctx.state.token.account
   const result = await User.findOneAndUpdate({ account }, { sign })
-  if (result) return responseSuccess({})
-  return responseError({})
-}
+  if (result) {
+    ctx.body = responseSuccess({})
+    return
+  }
+  ctx.body = responseError({})
+})
 
-export async function updateAvatar(data?: any) {
-  const avatar = data.request.body.avatarUrl
-  const account = data.state.token.account
+router.put('/avatar', async ctx => {
+  const avatar = ctx.request.body.avatarUrl
+  const account = ctx.state.token.account
   const result = await User.findOneAndUpdate({ account }, { avatar })
-  if (result) return responseSuccess({})
-  return responseError({})
-}
+  if (result) {
+    ctx.body = responseSuccess({})
+  } else {
+    ctx.body = responseError({})
+  }
+})
+
+router.put('/password', async ctx => {
+  const account = ctx.body.account
+  const tokenAccount = ctx.state.token.account
+  ctx.body = { msg: 'ok', data: { account, tokenAccount } }
+})
+export default router

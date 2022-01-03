@@ -1,4 +1,6 @@
 import jwt from 'jsonwebtoken'
+import STS from 'qcloud-cos-sts'
+
 import config from '../config.json'
 
 interface IGetJwtToken {
@@ -22,4 +24,38 @@ export function verifyJwtToken(tokenStr: string) {
 
 export function decodeJwtToken(tokenStr: string) {
   return jwt.decode(tokenStr, { complete: true })
+}
+
+// 获取腾讯云cos临时密钥
+export async function getSts(account: string) {
+  const cosConfig = { ...config.cos, allowPrefix: `${account}/*` }
+  const [ShortBucketName, AppId] = cosConfig.bucket.split('-')
+  const policy = {
+    version: '2.0',
+    statement: [
+      {
+        action: cosConfig.allowActions,
+        effect: 'allow',
+        resource: [
+          'qcs::cos:' +
+            cosConfig.region +
+            ':uid/' +
+            AppId +
+            ':prefix//' +
+            AppId +
+            '/' +
+            ShortBucketName +
+            '/' +
+            cosConfig.allowPrefix,
+        ],
+      },
+    ],
+  }
+  const data = await STS.getCredential({
+    secretId: cosConfig.secretId,
+    secretKey: cosConfig.secretKey,
+    durationSeconds: cosConfig.durationSeconds,
+    policy: policy,
+  })
+  return data
 }

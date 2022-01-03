@@ -1,2 +1,3 @@
-export * from './user'
-export * from './token'
+export default function () {
+  return 'hello world'
+}
