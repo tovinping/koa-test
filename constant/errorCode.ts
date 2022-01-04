@@ -1,0 +1,5 @@
+export enum ERROR_CODE {
+  TOKEN_ERROR = 4011,
+  TOKEN_EXPIRE = 4012,
+  TOKEN_EMPTY = 4013,
+}
