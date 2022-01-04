@@ -1,7 +1,8 @@
 import Router from 'koa-router'
 
 import { ERROR_CODE } from '../constant'
-import { decodeJwtToken, getSts, responseError, responseSuccess, verifyJwtToken } from '../utils'
+import { saveLoginCaptcha } from '../db'
+import { createCaptcha, decodeJwtToken, getSts, responseError, responseSuccess, verifyJwtToken } from '../utils'
 
 const router = new Router()
 
@@ -45,6 +46,13 @@ router.get('/sts/:account', async ctx => {
   } else {
     ctx.body = responseSuccess({ body: token })
   }
+})
+
+router.get('/captcha/:account', async ctx => {
+  const account = ctx.params.account
+  const imgData = createCaptcha()
+  saveLoginCaptcha(account, imgData.text)
+  ctx.body = responseSuccess({ body: imgData.data })
 })
 
 export default router

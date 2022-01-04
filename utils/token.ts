@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken'
 import STS from 'qcloud-cos-sts'
+import captcha from 'svg-captcha'
 import { COS_DEFAULT } from '../constant'
 const { JWT_SECRET = '', COS_SECRET_ID = '', COS_SECRET_KEY = '', COS_BUCKET = '', COS_REGION = '' } = process.env
 interface IGetJwtToken {
@@ -36,16 +37,7 @@ export async function getSts(account: string) {
         action: COS_DEFAULT.ACTIONS,
         effect: 'allow',
         resource: [
-          'qcs::cos:' +
-            COS_REGION +
-            ':uid/' +
-            AppId +
-            ':prefix//' +
-            AppId +
-            '/' +
-            ShortBucketName +
-            '/' +
-            allowPrefix,
+          'qcs::cos:' + COS_REGION + ':uid/' + AppId + ':prefix//' + AppId + '/' + ShortBucketName + '/' + allowPrefix,
         ],
       },
     ],
@@ -62,4 +54,8 @@ export async function getSts(account: string) {
     console.error('sts error=', error)
     return null
   }
+}
+// 登录验证码
+export function createCaptcha() {
+  return captcha.create({ size: 4, ignoreChars: 'oOiIl1', noise: 1, width: 100, height: 30, fontSize: 30, color: true })
 }
