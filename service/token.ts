@@ -42,8 +42,9 @@ router.get('/sts/:account', async ctx => {
   const token = await getSts(account)
   if (!token) {
     ctx.body = responseError({})
+  } else {
+    ctx.body = responseSuccess({ body: token })
   }
-  ctx.body = responseSuccess({ body: token })
 })
 
 export default router

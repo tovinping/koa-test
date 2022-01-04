@@ -4,7 +4,6 @@ import koaBody from 'koa-body'
 import appRouter from './router'
 import { jwtMiddleware, myCors } from './middleware'
 import './db'
-
 const app = new Koa()
 app.use(myCors)
 app.use(jwtMiddleware(['/user/login', '/user/register', '/user/autoLogin', '/encrypt/publicKey', '/user/forget']))

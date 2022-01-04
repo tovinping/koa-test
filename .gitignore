@@ -4,5 +4,4 @@ dist/
 build/
 upload/
 log/
-password.json
-config.json
+.env

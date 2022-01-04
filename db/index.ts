@@ -1,5 +1,4 @@
 import mongoose from 'mongoose'
 export * from './user'
-// import password from '../password.json'
-mongoose.connect('mongodb://localhost/test')
-// mongoose.connect(password.cloudMongo.url)
+const {DB_HOST = '', DB_PATH = ''} = process.env
+mongoose.connect(`mongodb://${DB_HOST}/${DB_PATH}`)
