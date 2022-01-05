@@ -1,5 +1,5 @@
 import Router from 'koa-router'
-import { User } from '../db'
+import { getLoginCaptcha, removeLoginCaptcha, User } from '../db'
 import {
   responseSuccess,
   responseError,
@@ -55,8 +55,13 @@ router.post('/register', async ctx => {
 
 router.post('/login', async ctx => {
   const data = ctx.request.body
-  if (!data || !data.account || !data.password) {
-    ctx.body = responseError({ msg: '数据为空' })
+  if (!data || !data.account || !data.password || !data.captchaId || !data.captchaText) {
+    ctx.body = responseError({ msg: '缺少登录数据' })
+    return
+  }
+  const redisCaptcha = await getLoginCaptcha(data.captchaId)
+  if (redisCaptcha && redisCaptcha.toLocaleLowerCase() !== data.captchaText) {
+    ctx.body = responseError({ msg: '验证码错误' })
     return
   }
   const findRes = await User.findOne({ account: data.account }, { password: 1, account: 1, role: 1, salt: 1 })
@@ -69,9 +74,10 @@ router.post('/login', async ctx => {
     const token = getJwtToken({ account: findRes.account, role: findRes.role })
     const refreshToken = getRefreshToken({ account: findRes.account })
     ctx.body = responseSuccess({ msg: '登录成功', body: { token, refreshToken } })
+    removeLoginCaptcha(data.captchaId)
     return
   } else {
-    ctx.body = responseError({ msg: '登录失败' })
+    ctx.body = responseError({ msg: '帐号或密码错误' })
     return
   }
 })
