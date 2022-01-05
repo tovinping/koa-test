@@ -84,11 +84,15 @@ router.post('/login', async ctx => {
 
 router.post('/autoLogin', async ctx => {
   const data = ctx.request.body
-  if (!data || !data.refreshToken) {
+  if (!data || !data.account || !data.refreshToken) {
     ctx.body = responseError({ msg: '登录失败' })
     return
   }
   const tokenObj = decodeJwtToken(data.refreshToken)
+  if (tokenObj?.payload.account !== data.account) {
+    ctx.body = responseError({msg: 'token不匹配'})
+    return
+  }
   if (tokenObj?.payload?.account) {
     const findRes = await User.findOne({ account: tokenObj.payload.account })
     if (!findRes) {
