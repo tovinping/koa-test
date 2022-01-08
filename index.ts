@@ -24,15 +24,15 @@ async function start() {
     console.log('mongoDB连接中...')
     await mongooseConnect()
     console.log('mongoDB连接成功')  
-  } catch (error) {
-    console.error('mongoDB连接失败', error)
+  } catch (error: any) {
+    console.error('mongoDB连接失败', error.toString())
   }
   try {
     console.log('redis连接中...')
     await redisClient.connect()
     console.log('redis连接成功')
-  } catch (error) {
-    console.error('redis连接失败', error)
+  } catch (error: any) {
+    console.error('redis连接失败', error.toString())
   }
   app.listen(4000, () => {
     console.log('应用服务于4000端口号')
