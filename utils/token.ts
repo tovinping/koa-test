@@ -1,21 +1,31 @@
 import jwt from 'jsonwebtoken'
 import STS from 'qcloud-cos-sts'
 import captcha from 'svg-captcha'
+import nodemailer from 'nodemailer'
 import { COS_DEFAULT } from '../constant'
-const { JWT_SECRET = '', COS_SECRET_ID = '', COS_SECRET_KEY = '', COS_BUCKET = '', COS_REGION = '' } = process.env
+const {
+  JWT_SECRET = '',
+  COS_SECRET_ID = '',
+  COS_SECRET_KEY = '',
+  COS_BUCKET = '',
+  COS_REGION = '',
+  MAIL_HOST = '',
+  MAIL_ACCOUNT,
+  MAIL_PASSWORD,
+} = process.env
 interface IGetJwtToken {
   account: string
   role: string
 }
-function sign(data: object, expiresIn: number | string) {
+function jwtSign(data: object, expiresIn: number | string) {
   return jwt.sign(data, JWT_SECRET, { expiresIn })
 }
 export function getJwtToken(data: IGetJwtToken) {
-  return sign(data, '30m')
+  return jwtSign(data, '30m')
 }
 
 export function getRefreshToken(data: any) {
-  return sign(data, '3d')
+  return jwtSign(data, '3d')
 }
 
 export function verifyJwtToken(tokenStr: string) {
@@ -58,4 +68,40 @@ export async function getSts(account: string) {
 // 登录验证码
 export function createCaptcha() {
   return captcha.create({ size: 4, ignoreChars: 'oOiIl1', noise: 1, width: 100, height: 30, fontSize: 30, color: true })
+}
+async function getMailTransporter() {
+  let transporter: nodemailer.Transporter
+  const createTransport = () => {
+    if (transporter) return transporter
+    transporter = nodemailer.createTransport({
+      host: MAIL_HOST,
+      auth: {
+        user: MAIL_ACCOUNT,
+        pass: MAIL_PASSWORD,
+      }
+    })
+    return transporter
+  }
+  return createTransport()
+}
+
+// 发送邮件
+export async function sendMail(to: `${string}@${string}`, subject: string, html: string) {
+  const transporter = await getMailTransporter()
+  if (!transporter) {
+    return
+  }
+  try {
+    const info = await transporter.sendMail({
+      from: 'tovinping@qq.com',
+      to,
+      subject,
+      html,
+    })
+    console.log('sendMail ok=', info.response)
+    return 0
+  } catch (error: any) {
+    console.log('sendMail fail=', error.toString())
+    return 1
+  }
 }

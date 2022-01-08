@@ -11,9 +11,10 @@ app.use(
     '/user/login',
     '/user/register',
     '/user/autoLogin',
+    '/user/forgot',
+    '/user/forgotCaptcha',
     '/encrypt/publicKey',
-    '/user/forget',
-    '/token/captcha',
+    '/token/imgCaptcha',
   ])
 )
 app.use(koaBody())

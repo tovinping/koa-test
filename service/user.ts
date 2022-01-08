@@ -1,5 +1,5 @@
 import Router from 'koa-router'
-import { getLoginCaptcha, removeLoginCaptcha, User } from '../db'
+import { getForgotCaptcha, getLoginCaptcha, removeLoginCaptcha, saveForgotCaptcha, User } from '../db'
 import {
   responseSuccess,
   responseError,
@@ -10,6 +10,8 @@ import {
   getRefreshToken,
   decodeJwtToken,
   isMail,
+  random,
+  sendMail,
 } from '../utils'
 const router = new Router()
 
@@ -134,13 +136,18 @@ router.put('/password', async ctx => {
   const tokenAccount = ctx.state.token.account
   ctx.body = { msg: 'ok', data: { account, tokenAccount } }
 })
-router.put('/forget', async ctx => {
+router.put('/forgot', async ctx => {
   const { account, mail, password, captcha } = ctx.request.body
-  if (!account || !mail || !password || !captcha) {
-    ctx.body = responseError({ msg: '逗我呢' })
+  if (!account || !isMail(mail) || !password || !captcha) {
+    ctx.body = responseError({ msg: '参数格式不正确' })
     return
   }
   // 验码-未完成-验证帐号和密码是一起的
+  const redisResult = await getForgotCaptcha(account)
+  if (redisResult !== captcha) {
+    ctx.body = responseError({msg: '验证码不匹配或已失效'})
+    return
+  }
   const findRes = await User.findOne({ account }, { salt: 1, mail: 1 })
   if (findRes?.mail !== mail) {
     ctx.body = responseError({ msg: '哦豁,失败啦' })
@@ -158,5 +165,31 @@ router.put('/forget', async ctx => {
     return
   }
   ctx.body = responseError({})
+})
+router.put('/forgotCaptcha', async ctx => {
+  const {account, mail} = ctx.request.body
+  if (!account || !isMail(mail)) {
+    ctx.body = responseError({msg: '参数格式不正确'})
+    return;
+  }
+  const redisResult = await getForgotCaptcha(account)
+  if (redisResult) {
+    ctx.body = responseSuccess({msg: '验证码已发送'})
+    return
+  }
+  const matchResult = await User.findOne({account}, {mail: 1})
+  if (matchResult?.mail !== mail) {
+    ctx.body = responseError({msg: '帐号和邮箱不匹配'})
+    return
+  }
+  const captcha = random()
+  saveForgotCaptcha(account, captcha)
+  const html = `验证码<b>${captcha}</b>(3分钟有效)`
+  const result = await sendMail(mail, '忘记密码', html)
+  if (result === 0) {
+    ctx.body = responseSuccess({msg: '验证码发送成功'})
+  } else {
+    ctx.body = responseError({msg: '验证码发送失败'})
+  }
 })
 export default router

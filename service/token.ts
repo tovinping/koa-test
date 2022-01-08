@@ -56,11 +56,10 @@ router.get('/sts/:account', async ctx => {
   }
 })
 
-router.get('/captcha', async ctx => {
+router.get('/imgCaptcha', async ctx => {
   const imgData = createCaptcha()
   const uuid = getUUID()
   saveLoginCaptcha(uuid, imgData.text)
   ctx.body = responseSuccess({ body: { id: uuid, svg: imgData.data } })
 })
-
 export default router

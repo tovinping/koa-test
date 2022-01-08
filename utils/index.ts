@@ -12,6 +12,9 @@ export function isEmpty(val?: any) {
       : true
     : false)
 }
+export function random() {
+  return Math.random().toString(36).slice(2)
+}
 interface IExpire<T> {
   value: T
   expire: number
