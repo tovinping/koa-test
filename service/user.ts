@@ -12,9 +12,10 @@ import {
   isMail,
   random,
   sendMail,
+  getLogger,
 } from '../utils'
 const router = new Router()
-
+const logger = getLogger('user')
 router.get('/:account', async ctx => {
   const account = ctx.params.account
   const result = await User.findOne({ account }, { _id: 0, __v: 0 })
@@ -57,8 +58,9 @@ router.post('/register', async ctx => {
 
 router.post('/login', async ctx => {
   const data = ctx.request.body
+  logger.info('login=', data.account)
   if (!data || !data.account || !data.password || !data.captchaId || !data.captchaText) {
-    ctx.body = responseError({ msg: '缺少登录数据' })
+    ctx.body = responseError({ msg: '缺少必要参数' })
     return
   }
   const redisCaptcha = await getLoginCaptcha(data.captchaId)
