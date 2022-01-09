@@ -1,10 +1,12 @@
 import Koa from 'koa'
 import koaBody from 'koa-body'
+import './constant'
 import appRouter from './router'
 import { jwtMiddleware, myCors, duration } from './middleware'
 import { mongooseConnect } from './db'
 import { redisClient } from './db'
 import { getLogger } from './utils'
+const { API_PORT } = process.env
 const logger = getLogger()
 const app = new Koa()
 app.use(duration)
@@ -23,7 +25,7 @@ app.use(
 app.use(koaBody())
 app.use(appRouter.routes())
 logger.info('应用启动中')
-logger.debug("Some debug messages");
+logger.debug('Some debug messages')
 async function start() {
   try {
     logger.info('mongoDB连接中...')
@@ -39,8 +41,8 @@ async function start() {
   } catch (error: any) {
     console.error('redis连接失败', error.toString())
   }
-  app.listen(4000, () => {
-    logger.info('应用启动成功端口: 4000')
+  app.listen(API_PORT, () => {
+    logger.info(`应用启动成功端口: ${API_PORT}`)
   })
 }
 

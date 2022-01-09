@@ -2,10 +2,10 @@ import log4js from 'log4js'
 import type { Appender } from 'log4js'
 const isDev = process.env.NODE_ENV === 'development'
 const common = { maxLogSize: 10485760, numBackups: 5 }
-const modules: string[] = ['default', 'user']
+const modules: string[] = ['default', 'user', 'token']
 const appenders: Record<string, Appender> = {}
 const categories: Record<string, { appenders: string[]; level: string }> = {}
-
+console.log('isDev=', isDev)
 modules.map(module => {
   appenders[module] = {
     type: 'file',

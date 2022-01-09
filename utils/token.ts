@@ -2,7 +2,9 @@ import jwt from 'jsonwebtoken'
 import STS from 'qcloud-cos-sts'
 import captcha from 'svg-captcha'
 import nodemailer from 'nodemailer'
+import { getLogger } from '../utils'
 import { COS_DEFAULT } from '../constant'
+const logger = getLogger('token')
 const {
   JWT_SECRET = '',
   COS_SECRET_ID = '',
@@ -78,7 +80,7 @@ async function getMailTransporter() {
       auth: {
         user: MAIL_ACCOUNT,
         pass: MAIL_PASSWORD,
-      }
+      },
     })
     return transporter
   }
@@ -98,10 +100,10 @@ export async function sendMail(to: `${string}@${string}`, subject: string, html:
       subject,
       html,
     })
-    console.log('sendMail ok=', info.response)
+    logger.info('sendMail ok=', info.response)
     return 0
   } catch (error: any) {
-    console.log('sendMail fail=', error.toString())
+    logger.info('sendMail fail=', error.toString())
     return 1
   }
 }

@@ -57,19 +57,19 @@ router.post('/register', async ctx => {
 })
 
 router.post('/login', async ctx => {
-  const data = ctx.request.body
-  logger.info('login=', data.account)
-  if (!data || !data.account || !data.password || !data.captchaId || !data.captchaText) {
+  const { account, password, captchaId, captchaText } = ctx.request.body
+  logger.info('login=', 'acc=', account, 'pwd=', password, 'cap=', captchaId, 'capt=', captchaText)
+  if (!account || !password || !captchaId || !captchaText) {
     ctx.body = responseError({ msg: '缺少必要参数' })
     return
   }
-  const redisCaptcha = await getLoginCaptcha(data.captchaId)
-  if (redisCaptcha && redisCaptcha.toLocaleLowerCase() !== data.captchaText) {
+  const redisCaptcha = await getLoginCaptcha(captchaId)
+  if (redisCaptcha && redisCaptcha.toLocaleLowerCase() !== captchaText) {
     ctx.body = responseError({ msg: '验证码错误' })
     return
   }
-  const findRes = await User.findOne({ account: data.account }, { password: 1, account: 1, role: 1, salt: 1 })
-  const deCodePwd = decryptRsa(data.password)
+  const findRes = await User.findOne({ account: account }, { password: 1, account: 1, role: 1, salt: 1 })
+  const deCodePwd = decryptRsa(password)
   if (!deCodePwd) {
     ctx.body = responseError({ msg: '密码解析异常' })
     return
@@ -78,7 +78,7 @@ router.post('/login', async ctx => {
     const token = getJwtToken({ account: findRes.account, role: findRes.role })
     const refreshToken = getRefreshToken({ account: findRes.account })
     ctx.body = responseSuccess({ msg: '登录成功', body: { token, refreshToken } })
-    removeLoginCaptcha(data.captchaId)
+    removeLoginCaptcha(captchaId)
     return
   } else {
     ctx.body = responseError({ msg: '帐号或密码错误' })
@@ -94,7 +94,7 @@ router.post('/autoLogin', async ctx => {
   }
   const tokenObj = decodeJwtToken(data.refreshToken)
   if (tokenObj?.payload.account !== data.account) {
-    ctx.body = responseError({msg: 'token不匹配'})
+    ctx.body = responseError({ msg: 'token不匹配' })
     return
   }
   if (tokenObj?.payload?.account) {
@@ -147,7 +147,7 @@ router.put('/forgot', async ctx => {
   // 验码-未完成-验证帐号和密码是一起的
   const redisResult = await getForgotCaptcha(account)
   if (redisResult !== captcha) {
-    ctx.body = responseError({msg: '验证码不匹配或已失效'})
+    ctx.body = responseError({ msg: '验证码不匹配或已失效' })
     return
   }
   const findRes = await User.findOne({ account }, { salt: 1, mail: 1 })
@@ -169,19 +169,19 @@ router.put('/forgot', async ctx => {
   ctx.body = responseError({})
 })
 router.put('/forgotCaptcha', async ctx => {
-  const {account, mail} = ctx.request.body
+  const { account, mail } = ctx.request.body
   if (!account || !isMail(mail)) {
-    ctx.body = responseError({msg: '参数格式不正确'})
-    return;
+    ctx.body = responseError({ msg: '参数格式不正确' })
+    return
   }
   const redisResult = await getForgotCaptcha(account)
   if (redisResult) {
-    ctx.body = responseSuccess({msg: '验证码已发送'})
+    ctx.body = responseSuccess({ msg: '验证码已发送' })
     return
   }
-  const matchResult = await User.findOne({account}, {mail: 1})
+  const matchResult = await User.findOne({ account }, { mail: 1 })
   if (matchResult?.mail !== mail) {
-    ctx.body = responseError({msg: '帐号和邮箱不匹配'})
+    ctx.body = responseError({ msg: '帐号和邮箱不匹配' })
     return
   }
   const captcha = random()
@@ -189,9 +189,9 @@ router.put('/forgotCaptcha', async ctx => {
   const html = `验证码<b>${captcha}</b>(3分钟有效)`
   const result = await sendMail(mail, '忘记密码', html)
   if (result === 0) {
-    ctx.body = responseSuccess({msg: '验证码发送成功'})
+    ctx.body = responseSuccess({ msg: '验证码发送成功' })
   } else {
-    ctx.body = responseError({msg: '验证码发送失败'})
+    ctx.body = responseError({ msg: '验证码发送失败' })
   }
 })
 export default router
