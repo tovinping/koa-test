@@ -27,6 +27,7 @@
     "nodemailer": "^6.7.2",
     "qcloud-cos-sts": "^3.0.6",
     "redis": "^4.0.1",
+    "socket.io": "^4.4.1",
     "svg-captcha": "^1.4.0",
     "uuid": "^8.3.2",
     "validator": "^13.7.0"

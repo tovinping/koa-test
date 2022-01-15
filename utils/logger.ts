@@ -5,7 +5,6 @@ const common = { maxLogSize: 10485760, numBackups: 5 }
 const modules: string[] = ['default', 'user', 'token']
 const appenders: Record<string, Appender> = {}
 const categories: Record<string, { appenders: string[]; level: string }> = {}
-console.log('isDev=', isDev)
 modules.map(module => {
   appenders[module] = {
     type: 'file',

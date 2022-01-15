@@ -3,6 +3,11 @@ export * from './response'
 export * from './encrypt'
 export * from './token'
 export * from './validator'
+const { NODE_ENV } = process.env
+export function isDev() {
+  if (NODE_ENV === 'development') return true
+  return false
+}
 
 export function isEmpty(val?: any) {
   return !(val

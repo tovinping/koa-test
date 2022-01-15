@@ -3,7 +3,8 @@ interface IResponse<T = any> {
   body?: T
   msg?: string
 }
-export function responseSuccess({ code = 0, msg = '成功', body = null }: IResponse) {
+export function responseSuccess(params?: IResponse) {
+  const { code = 0, msg = '成功', body = null } = params || {}
   return {
     code,
     msg,
@@ -11,7 +12,8 @@ export function responseSuccess({ code = 0, msg = '成功', body = null }: IResp
   }
 }
 
-export function responseError({ code = 1, msg = '失败', body = null }: IResponse) {
+export function responseError(params?: IResponse) {
+  const { code = 1, msg = '失败', body = null } = params || {}
   return {
     code,
     msg,

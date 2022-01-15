@@ -6,6 +6,7 @@ import { jwtMiddleware, myCors, duration } from './middleware'
 import { mongooseConnect } from './db'
 import { redisClient } from './db'
 import { getLogger } from './utils'
+import { initSocket } from './service/socket'
 const { API_PORT } = process.env
 const logger = getLogger()
 const app = new Koa()
@@ -27,6 +28,7 @@ app.use(appRouter.routes())
 logger.info('应用启动中')
 logger.debug('Some debug messages')
 async function start() {
+  initSocket()
   try {
     logger.info('mongoDB连接中...')
     await mongooseConnect()
