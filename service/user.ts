@@ -16,6 +16,21 @@ import {
 } from '../utils'
 const router = new Router()
 const logger = getLogger('user')
+router.get('/list', async ctx => {
+  const accountStr = ctx.request.query.accounts
+  if (!accountStr) {
+    ctx.body = responseError()
+    return
+  }
+  try {
+    const accounts = (accountStr as string).split(',')
+    logger.info('/list', accountStr)
+    const findResult = await User.find({ account: { $in: accounts } }, { _id: 0, role: 0, __v: 0 })
+    ctx.body = responseSuccess({ body: findResult })
+  } catch (error) {
+    ctx.body = responseError()
+  }
+})
 router.get('/:account', async ctx => {
   const account = ctx.params.account
   const result = await User.findOne({ account }, { _id: 0, __v: 0 })
