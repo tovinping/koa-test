@@ -5,7 +5,9 @@ import { responseError, responseSuccess, validChatType } from '../utils'
 const router = new Router()
 
 router.get('/', async ctx => {
-  ctx.body = responseSuccess({ body: [] })
+  const { account } = ctx.state.token
+  const findResult = await Chat.find({account})
+  ctx.body = responseSuccess({ body: findResult })
 })
 router.post('/', async ctx => {
   const { chatId, chatType, isTop = YES_NO.NO } = ctx.request.body
