@@ -7,6 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon index.ts",
     "eslint": "eslint --fix ./",
+    "prepare": "husky install",
     "pretty-quick": "npm run eslint && pretty-quick --staged",
     "build": "tsc --build tsconfig.json"
   },
