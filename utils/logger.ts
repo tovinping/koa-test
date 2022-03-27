@@ -8,7 +8,7 @@ const categories: Record<string, { appenders: string[]; level: string }> = {}
 modules.map(module => {
   appenders[module] = {
     type: 'file',
-    filename: `log/${module}.log`,
+    filename: `logs/${module}.log`,
     ...common,
   }
   categories[module] = {

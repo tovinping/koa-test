@@ -1,5 +1,5 @@
 import { createClient } from 'redis'
-export const redisClient = createClient()
+export const redisClient = createClient({url: 'redis://tovinping.cn'})
 // 登录验证码
 export function saveLoginCaptcha(key: string, captcha: string) {
   return redisClient.setEx(key, 60, captcha)
