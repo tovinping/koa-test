@@ -1,7 +1,7 @@
 import Router from 'koa-router'
 
 import { ERROR_CODE } from '../constant'
-import { saveLoginCaptcha } from '../db'
+import { saveLoginCaptcha } from '../models'
 import {
   createCaptcha,
   decodeJwtToken,

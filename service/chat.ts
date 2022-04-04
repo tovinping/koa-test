@@ -1,12 +1,12 @@
 import Router from 'koa-router'
 import { CHAT_TYPE, YES_NO } from '../constant'
-import { Chat } from '../db'
+import { Chat } from '../models'
 import { responseError, responseSuccess, validChatType } from '../utils'
 const router = new Router()
 
 router.get('/', async ctx => {
   const { account } = ctx.state.token
-  const findResult = await Chat.find({account})
+  const findResult = await Chat.find({ account })
   ctx.body = responseSuccess({ body: findResult })
 })
 router.post('/', async ctx => {

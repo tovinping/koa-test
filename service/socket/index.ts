@@ -2,6 +2,7 @@ import { getLogger } from 'log4js'
 import { Server } from 'socket.io'
 import { CHAT_TYPE } from '../../constant'
 import { decodeJwtToken, isDev } from '../../utils'
+import { p2pChat } from './msg'
 const logger = getLogger('socket')
 const origin = isDev() ? 'http://localhost:3000' : 'https://im.tovinping.cn'
 const io = new Server({
@@ -26,23 +27,6 @@ io.use((socket, next) => {
     next()
   }
 })
-// 校验是否可以发消息--权限不足-对方帐号已失效
-function checkSend(chatId: string, chatType: string) {
-  return chatId || chatType
-}
-// 单聊
-async function p2pChat(msg: {chatId: string, senderId: string, chatType: string}) {
-  const checkResult = checkSend(msg.chatId, msg.chatType)
-  if (checkResult === '') {
-    logger.error('p2pChat check=', msg.chatId, 'senderId=', msg.senderId)
-    return {isOk: false, msg: checkResult}
-  }
-  const result = await io.of('/').to(msg.chatId).emit('message', msg)
-  if (!result) {
-    logger.error('p2pChat=', msg.chatId, 'senderId=', msg.senderId)
-  }
-  return {isOk: !!result, msg: ''}
-}
 
 io.on('connection', socket => {
   const account = socket.handshake.auth.account
@@ -60,3 +44,4 @@ export function initSocket() {
   console.log('socket start')
   io.listen(4001)
 }
+export default io

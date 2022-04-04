@@ -1,5 +1,5 @@
 import Router from 'koa-router'
-import { getForgotCaptcha, getLoginCaptcha, removeLoginCaptcha, saveForgotCaptcha, User } from '../db'
+import { getForgotCaptcha, getLoginCaptcha, removeLoginCaptcha, saveForgotCaptcha, User } from '../models'
 import {
   responseSuccess,
   responseError,

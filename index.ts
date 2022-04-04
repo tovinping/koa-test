@@ -3,11 +3,11 @@ import koaBody from 'koa-body'
 import './constant'
 import appRouter from './router'
 import { jwtMiddleware, myCors, duration } from './middleware'
-import { mongooseConnect } from './db'
-import { redisClient } from './db'
+import { mongooseConnect } from './models'
+import { redisClient } from './models'
 import { getLogger } from './utils'
 import { initSocket } from './service/socket'
-const { API_PORT } = process.env;
+const { API_PORT } = process.env
 const logger = getLogger()
 const app = new Koa()
 app.use(duration)
