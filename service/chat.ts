@@ -1,8 +1,10 @@
 import Router from 'koa-router'
 import { CHAT_TYPE, YES_NO } from '../constant'
+import { getLogger } from '../utils/logger'
 import { Chat } from '../models'
 import { responseError, responseSuccess, validChatType } from '../utils'
 const router = new Router()
+const logger = getLogger('service_chat')
 
 router.get('/', async ctx => {
   const { account } = ctx.state.token
@@ -10,20 +12,21 @@ router.get('/', async ctx => {
   ctx.body = responseSuccess({ body: findResult })
 })
 router.post('/', async ctx => {
-  const { chatId, chatType, isTop = YES_NO.NO } = ctx.request.body
+  const { chatId, type } = ctx.request.body
+  logger.info('add chat chatId=', chatId, 'type=', type)
   const { account } = ctx.state.token
-  if (!chatId || !validChatType(chatType)) {
+  if (!chatId || !validChatType(type)) {
     ctx.body = responseError({ msg: '参数错误' })
     return
   }
 
-  if (chatType === CHAT_TYPE.P2P) {
-    const findResult = await Chat.findOneAndUpdate({ chatId }, { $set: { isDel: YES_NO.NO } })
+  if (type === CHAT_TYPE.P2P) {
+    const findResult = await Chat.findOneAndUpdate({ chatId, account }, { $set: { isDel: YES_NO.NO } })
     if (findResult?.chatId) {
       ctx.body = responseSuccess({ msg: '会话已更新为正常' })
       return
     }
-    const chat = new Chat({ chatId, chatType, isTop, account })
+    const chat = new Chat({ chatId, type, account })
     const addResult = await chat.save()
     if (addResult.chatId) {
       ctx.body = responseSuccess({ msg: '传话创建成功' })
