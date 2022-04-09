@@ -7,15 +7,16 @@ const router = new Router()
 const logger = getLogger('service_msg')
 
 router.get('/history', async ctx => {
-  const { chatId, chatType, timestamp = 0 } = ctx.query
+  const { chatId, chatType, timestamp } = ctx.query
+  const myTimestamp = timestamp || 9999999999999
   const { account } = ctx.state.token
-  logger.info('history chatId=', chatId, 'account=', account, 'timestamp=', timestamp)
+  logger.info('history chatId=', chatId, 'account=', account, 'timestamp=', myTimestamp)
   if (!chatId || !chatType) {
     ctx.body = responseError({ msg: '参数错误' })
     return
   }
   if (chatType === CHAT_TYPE.P2P) {
-    const findResult = await Msg.find({ timestamp: { $lt: Number(timestamp) } })
+    const findResult = await Msg.find({ timestamp: { $lt: Number(myTimestamp) } })
       .or([
         { chatId: account, account: chatId },
         { account, chatId },
@@ -24,7 +25,7 @@ router.get('/history', async ctx => {
       .sort({ timestamp: -1 })
     ctx.body = responseSuccess({ body: findResult })
   } else {
-    const findResult = await Msg.find({ chatId, timestamp: { $lt: Number(timestamp) } })
+    const findResult = await Msg.find({ chatId, timestamp: { $lt: Number(myTimestamp) } })
       .limit(20)
       .sort({ timestamp: -1 })
     ctx.body = responseSuccess({ body: findResult })
